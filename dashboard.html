@@ -3,78 +3,122 @@
 <head>
 <meta charset="UTF-8">
 <title>Dashboard Logs</title>
+
 <style>
 body {
     font-family: Arial;
     padding: 20px;
+    background: #f4f4f4;
 }
+
+h1 {
+    text-align: center;
+}
+
 table {
     border-collapse: collapse;
     width: 100%;
+    background: white;
 }
+
 th, td {
     border: 1px solid #ccc;
-    padding: 8px;
+    padding: 10px;
+    text-align: left;
 }
+
 th {
     background: #333;
     color: white;
 }
+
+tr:nth-child(even) {
+    background: #f9f9f9;
+}
 </style>
 </head>
+
 <body>
 
 <h1>📊 Accesos registrados</h1>
 
-<table id="tabla">
+<table>
     <thead>
         <tr>
             <th>IP</th>
             <th>Sistema</th>
-            <th>Navegador</th>
-            <th>Fecha</th>
+            <th>UserAgent</th>
+            <th>Fecha y Hora</th>
         </tr>
     </thead>
-    <tbody></tbody>
+    <tbody id="tablaBody"></tbody>
 </table>
 
 <script type="module">
-// Importar Firebase
+// Firebase
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import { getFirestore, collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-// 🔴 TU CONFIGURACIÓN
+// 🔴 REEMPLAZA CON TU CONFIG
 const firebaseConfig = {
-  apiKey: "TU_API_KEY",
-  authDomain: "TU_PROYECTO.firebaseapp.com",
-  projectId: "TU_PROYECTO",
-  storageBucket: "TU_PROYECTO.appspot.com",
-  messagingSenderId: "XXXX",
-  appId: "XXXX"
+  apiKey: "AIzaSyD4z4m7cQEP-DgZj_RKjwegPTyvf-vFhI8",
+  authDomain: "megasrf-72aac.firebaseapp.com",
+  projectId:"megasrf-72aac",
+  storageBucket: "megasrf-72aac.firebasestorage.app",
+  messagingSenderId: "289651269227",
+  appId: "1:289651269227:web:3aa260156bd5040d14db2e"
 };
 
-// Inicializar
+// Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
-// Obtener datos
-async function cargarDatos() {
-    const querySnapshot = await getDocs(collection(db, "logs"));
-    const tbody = document.querySelector("#tabla tbody");
+// ✅ Limpiar UserAgent
+function limpiarUserAgent(ua) {
+    if (!ua) return "-";
 
-    querySnapshot.forEach((doc) => {
+    const partes = ua.split(";");
+    
+    return partes
+        .slice(0, 2)
+        .join(";")
+        .replace("(", "")   // quitar paréntesis
+        .trim();
+}
+
+// ✅ Formatear fecha + hora
+function formatearFechaHora(data) {
+    if (data.fecha && data.hora) {
+        return data.fecha + " " + data.hora;
+    }
+
+    if (data.fechaCompleta) {
+        return new Date(data.fechaCompleta).toLocaleString();
+    }
+
+    return "-";
+}
+
+// ✅ Cargar datos
+async function cargarDatos() {
+    const tabla = document.getElementById("tablaBody");
+
+    const q = query(collection(db, "logs"), orderBy("fecha", "desc"));
+    const querySnapshot = await getDocs(q);
+
+    querySnapshot.forEach(doc => {
         const data = doc.data();
 
-        const fila = `
-            <tr>
-                <td>${data.ip || "-"}</td>
-                <td>${data.platform || "-"}</td>
-                <td>${data.userAgent || "-"}</td>
-                <td>${data.fecha || "-"}</td>
-            </tr>
+        const fila = document.createElement("tr");
+
+        fila.innerHTML = `
+            <td>${data.ip || "-"}</td>
+            <td>${data.platform || "-"}</td>
+            <td>${limpiarUserAgent(data.userAgent)}</td>
+            <td>${formatearFechaHora(data)}</td>
         `;
 
-        tbody.innerHTML += fila;
+        tabla.appendChild(fila);
     });
 }
 
@@ -83,4 +127,3 @@ cargarDatos();
 
 </body>
 </html>
-``
