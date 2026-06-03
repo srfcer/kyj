@@ -88,12 +88,14 @@ function limpiarUserAgent(ua) {
 
 // ✅ Formatear fecha + hora
 function formatearFechaHora(data) {
-    if (data.fecha && data.hora) {
-        return data.fecha + " " + data.hora;
-    }
 
-    if (data.fechaCompleta) {
-        return new Date(data.fechaCompleta).toLocaleString();
+    if (data.fecha) {
+        const f = new Date(data.fecha);
+
+        const fecha = f.toLocaleDateString("es-PE");
+        const hora = f.toLocaleTimeString("es-PE");
+
+        return `${fecha} ${hora}`;
     }
 
     return "-";
