@@ -87,6 +87,22 @@ function limpiarUserAgent(ua) {
         .trim();
 }
 
+// ✅Obtener solo navegador    
+function detectarNavegador(ua) {
+    if (!ua) return "-";
+
+    ua = ua.toLowerCase();
+
+    if (ua.includes("edg")) return "Edge";
+    if (ua.includes("chrome")) return "Chrome";
+    if (ua.includes("firefox")) return "Firefox";
+    if (ua.includes("safari") && !ua.includes("chrome")) return "Safari";
+    if (ua.includes("opera") || ua.includes("opr")) return "Opera";
+
+    return "Desconocido";
+}
+
+
 // ✅ Formatear fecha + hora
 function formatearFechaHora(data) {
 
@@ -118,7 +134,7 @@ async function cargarDatos() {
             <td>${data.ip || "-"}</td>
             <td>${data.platform || "-"}</td>
             <td>${limpiarUserAgent(data.userAgent)}</td>
-            <td>${data.userAgent || "-"}</td>
+            <td>${detectarNavegador(data.userAgent)}</td>>
             <td>${formatearFechaHora(data)}</td>
         `;
 
