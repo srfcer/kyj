@@ -23,11 +23,32 @@ async function getIP() {
     }
 }
 
+
+async function getDatosIP(ip) {
+    try {
+        const res = await fetch(`https://ipapi.co/${ip}/json/`);
+        const data = await res.json();
+
+        return {
+            isp: data.org || "Desconocido",
+            pais: data.country_name,
+            ciudad: data.city
+        };
+    } catch {
+        return { isp: "Error" };
+    }
+}
+
+
 (async () => {
     const ip = await getIP();
+    const datos = await getDatosIP(ip);
 
     const logData = {
         ip: ip,
+        isp: datos.isp,
+        pais: datos.pais,
+        ciudad: datos.ciudad,
         userAgent: navigator.userAgent,
         platform: navigator.platform,
         idioma: navigator.language,
