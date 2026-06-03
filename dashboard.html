@@ -48,6 +48,7 @@ tr:nth-child(even) {
             <th>IP</th>
             <th>Sistema</th>
             <th>UserAgent</th>
+            <th>Navegador</th>
             <th>Fecha y Hora</th>
         </tr>
     </thead>
@@ -117,6 +118,7 @@ async function cargarDatos() {
             <td>${data.ip || "-"}</td>
             <td>${data.platform || "-"}</td>
             <td>${limpiarUserAgent(data.userAgent)}</td>
+            <td>${data.userAgent || "-"}</td>
             <td>${formatearFechaHora(data)}</td>
         `;
 
