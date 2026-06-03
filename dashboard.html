@@ -46,6 +46,9 @@ tr:nth-child(even) {
     <thead>
         <tr>
             <th>IP</th>
+            <th>ISP</th>
+            <th>Pais</th>
+            <th>Ciudad</th>
             <th>Sistema</th>
             <th>UserAgent</th>
             <th>Navegador</th>
@@ -132,6 +135,9 @@ async function cargarDatos() {
 
         fila.innerHTML = `
             <td>${data.ip || "-"}</td>
+            <td>${data.isp || "-"}</td>
+            <td>${data.pais || "-"}</td>
+            <td>${data.ciudad || "-"}</td>
             <td>${data.platform || "-"}</td>
             <td>${limpiarUserAgent(data.userAgent)}</td>
             <td>${detectarNavegador(data.userAgent)}</td>
