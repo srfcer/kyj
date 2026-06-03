@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Dashboard Logs</title>
+<style>
+body {
+    font-family: Arial;
+    padding: 20px;
+}
+table {
+    border-collapse: collapse;
+    width: 100%;
+}
+th, td {
+    border: 1px solid #ccc;
+    padding: 8px;
+}
+th {
+    background: #333;
+    color: white;
+}
+</style>
+</head>
+<body>
+
+<h1>📊 Accesos registrados</h1>
+
+<table id="tabla">
+    <thead>
+        <tr>
+            <th>IP</th>
+            <th>Sistema</th>
+            <th>Navegador</th>
+            <th>Fecha</th>
+        </tr>
+    </thead>
+    <tbody></tbody>
+</table>
+
+<script type="module">
+// Importar Firebase
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// 🔴 TU CONFIGURACIÓN
+const firebaseConfig = {
+  apiKey: "TU_API_KEY",
+  authDomain: "TU_PROYECTO.firebaseapp.com",
+  projectId: "TU_PROYECTO",
+  storageBucket: "TU_PROYECTO.appspot.com",
+  messagingSenderId: "XXXX",
+  appId: "XXXX"
+};
+
+// Inicializar
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+// Obtener datos
+async function cargarDatos() {
+    const querySnapshot = await getDocs(collection(db, "logs"));
+    const tbody = document.querySelector("#tabla tbody");
+
+    querySnapshot.forEach((doc) => {
+        const data = doc.data();
+
+        const fila = `
+            <tr>
+                <td>${data.ip || "-"}</td>
+                <td>${data.platform || "-"}</td>
+                <td>${data.userAgent || "-"}</td>
+                <td>${data.fecha || "-"}</td>
+            </tr>
+        `;
+
+        tbody.innerHTML += fila;
+    });
+}
+
+cargarDatos();
+</script>
+
+</body>
+</html>
+``
